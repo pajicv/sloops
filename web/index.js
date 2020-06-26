@@ -16,4 +16,10 @@ const loadingTextures = [
   }),
 ];
 
-renderCanvas(Game(gameProps), loadingTextures, ASSET_NAMES, "scale-up");
+renderCanvas(
+  Game(gameProps),
+  loadingTextures,
+  ASSET_NAMES,
+  "scale-up",
+  document.getElementById("game")
+);

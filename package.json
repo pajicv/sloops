@@ -18,6 +18,7 @@
     "@replay/core": "0.2.0",
     "@replay/web": "0.2.0",
     "core-js": "^3.6.5",
+    "point-in-triangle": "^1.0.1",
     "regenerator-runtime": "^0.13.5"
   },
   "devDependencies": {
