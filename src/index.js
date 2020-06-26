@@ -45,6 +45,7 @@ const initialState = {
       turnLeft: "ArrowLeft",
       turnRight: "ArrowRight",
     },
+    fileName: "Brod1.png",
   },
   player2: {
     id: "player2",
@@ -59,6 +60,7 @@ const initialState = {
       turnLeft: "a",
       turnRight: "d",
     },
+    fileName: "Brod2.png",
   },
   isGameOver: false,
   winner: null,
@@ -129,7 +131,18 @@ function createExplosion(cannonball, updateState) {
         x,
         y,
         id: prevState.explosions.length,
+        onExplode: () =>
+          deleteExplosion(prevState.explosions.length, updateState),
       },
+    ],
+  }));
+}
+
+function deleteExplosion(explosionId, updateState) {
+  updateState((prevState) => ({
+    ...prevState,
+    explosions: [
+      ...prevState.explosions.filter(({ id }) => id !== explosionId),
     ],
   }));
 }
@@ -147,8 +160,7 @@ function deleteCannonballs(explodedCannonballs, updateState) {
 }
 
 function updatePlayer(player, enemy, device, updateState) {
-  let direction =
-    player.direction + getRotationChange(player.controls, device);
+  let direction = player.direction + getRotationChange(player.controls, device);
 
   if (direction > 360) {
     direction -= 360;
@@ -332,7 +344,10 @@ export const Game = makeSprite({
           }),
           t.text({
             font: { name: "Calibri", size: 18 },
-            text: state.winner.id + " wins!",
+            text:
+              state.winner.id === "player1"
+                ? "Player 1 wins!"
+                : "Player 2 wins!",
             color: "#ffff00",
             x: 0,
             y: -20,
@@ -348,28 +363,28 @@ export const Game = makeSprite({
       t.text({
         font: { name: "Calibri", size: 18 },
         text: "Player 1",
-        color: "#ffff00",
+        color: "#ff0000",
         x: -device.size.width / 2 + 40,
         y: device.size.height / 2 - 20,
       }),
       t.text({
         font: { name: "Calibri", size: 18 },
         text: state.player1.score,
-        color: "#ffff00",
+        color: "#ff0000",
         x: -device.size.width / 2 + 40,
         y: device.size.height / 2 - 40,
       }),
       t.text({
         font: { name: "Calibri", size: 18 },
         text: "Player 2",
-        color: "#ffff00",
+        color: "#0000ff",
         x: device.size.width / 2 - 40,
         y: device.size.height / 2 - 20,
       }),
       t.text({
         font: { name: "Calibri", size: 18 },
         text: state.player2.score,
-        color: "#ffff00",
+        color: "#0000ff",
         x: device.size.width / 2 - 40,
         y: device.size.height / 2 - 40,
       }),
@@ -378,18 +393,20 @@ export const Game = makeSprite({
         x: state.player1.x,
         y: state.player1.y,
         rotation: state.player1.direction,
+        fileName: state.player1.fileName,
       }),
       Ship({
         id: state.player2.id,
         x: state.player2.x,
         y: state.player2.y,
         rotation: state.player2.direction,
+        fileName: state.player2.fileName,
       }),
       ...state.cannonballs.map(({ x, y, id }) =>
         Cannonball({ x, y, id: "cannonball" + id })
       ),
-      ...state.explosions.map(({ x, y, id }) =>
-        Explosion({ x, y, id: "explosion" + id })
+      ...state.explosions.map(({ x, y, id, onExplode }) =>
+        Explosion({ x, y, id: "explosion" + id, onExplode })
       ),
       ...gameOverMessage,
     ];

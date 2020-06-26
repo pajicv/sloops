@@ -7,21 +7,25 @@ export const Explosion = makeSprite({
     };
   },
 
-  loop({ state }) {
+  loop({ props, state }) {
+    if (state.frame === 15) {
+      props.onExplode();
+      return state;
+    }
     return {
-      frame: state.frame < 7 ? state.frame + 1 : 7,
+      frame: state.frame + 1,
     };
   },
 
   render({ state }) {
     return [
       t.spriteSheet({
-        fileName: "explode3.bmp",
+        fileName: "ex.png",
         columns: 4,
-        rows: 2,
+        rows: 4,
         index: state.frame,
-        width: 10,
-        height: 10,
+        width: 20,
+        height: 20,
       }),
     ];
   },
