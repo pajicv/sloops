@@ -37,7 +37,7 @@ const initialState = {
     x: -150,
     y: -150,
     speed: 0.5,
-    direction: -90,
+    direction: 270,
     isLoaded: true,
     score: 0,
     controls: {
@@ -91,11 +91,15 @@ function reloadPlayer(player) {
 
 function getCannonballDirection(player, enemy) {
   const { x, y, direction } = player;
-  const topX = x + 40 * Math.cos(deg2rad(direction));
-  const topY = y + 40 * Math.sin(deg2rad(direction));
-  return Math.sign(
-    (x - topX) * (enemy.y - topY) - (y - topY) * (enemy.x - topX)
-  );
+  const rightX = x + 5 * Math.cos(deg2rad(360 - direction - 90));
+  const rightY = y + 5 * Math.sin(deg2rad(360 - direction - 90));
+  const leftX = x + 5 * Math.cos(deg2rad(360 - direction + 90));
+  const leftY = y + 5 * Math.sin(deg2rad(360 - direction + 90));
+  const distanceRight =
+    Math.pow(enemy.x - rightX, 2) + Math.pow(enemy.y - rightY, 2);
+  const distanceLeft =
+    Math.pow(enemy.x - leftX, 2) + Math.pow(enemy.y - leftY, 2);
+  return Math.sign(distanceLeft - distanceRight);
 }
 
 function createCannonball(player, enemy, updateState) {
@@ -143,8 +147,14 @@ function deleteCannonballs(explodedCannonballs, updateState) {
 }
 
 function updatePlayer(player, enemy, device, updateState) {
-  const direction =
+  let direction =
     player.direction + getRotationChange(player.controls, device);
+
+  if (direction > 360) {
+    direction -= 360;
+  } else if (direction < 0) {
+    direction += 360;
+  }
 
   let { isLoaded } = player;
   if (isLoaded && isFiring(player.controls, device)) {
