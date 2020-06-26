@@ -289,7 +289,7 @@ export const Game = makeSprite({
     const hits1 = checkCollision(player1, cannonballs);
     if (hits1.length > 0) {
       player2.score = player2.score + hits1.length;
-      if (player2.score >= 3) {
+      if (player2.score >= 10) {
         isGameOver = true;
         winner = player2;
       }
@@ -301,7 +301,7 @@ export const Game = makeSprite({
     const hits2 = checkCollision(player2, cannonballs);
     if (hits2.length > 0) {
       player1.score = player1.score + hits2.length;
-      if (player1.score >= 3) {
+      if (player1.score >= 10) {
         isGameOver = true;
         winner = player1;
       }
